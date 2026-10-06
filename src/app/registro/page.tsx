@@ -1,6 +1,44 @@
-export default function RegistroPage() {
+import Link from "next/link";
+import { Suspense } from "react";
+import { signUp } from "@/app/auth/actions";
+
+function ErrorMessage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-violet-100 via-white to-purple-100 flex items-center justify-center px-4">
+    <Suspense fallback={null}>
+      <ErrorContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function ErrorContent({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
+
+  if (!params.error) {
+    return null;
+  }
+
+  return (
+    <div className="mb-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+      {params.error}
+    </div>
+  );
+}
+
+export default function RegistroPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-violet-100 via-white to-purple-100 px-4">
       <section className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900">Crear cuenta</h1>
@@ -10,7 +48,9 @@ export default function RegistroPage() {
           </p>
         </div>
 
-        <form className="space-y-5">
+        <ErrorMessage searchParams={searchParams} />
+
+        <form action={signUp} className="space-y-5">
           <div>
             <label
               htmlFor="name"
@@ -23,6 +63,7 @@ export default function RegistroPage() {
               id="name"
               name="name"
               type="text"
+              required
               placeholder="Tu nombre"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
             />
@@ -40,6 +81,7 @@ export default function RegistroPage() {
               id="email"
               name="email"
               type="email"
+              required
               placeholder="correo@ejemplo.com"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
             />
@@ -57,6 +99,8 @@ export default function RegistroPage() {
               id="password"
               name="password"
               type="password"
+              required
+              minLength={6}
               placeholder="••••••••"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
             />
@@ -72,12 +116,12 @@ export default function RegistroPage() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           ¿Ya tienes una cuenta?{" "}
-          <a
+          <Link
             href="/login"
             className="font-semibold text-violet-600 hover:text-violet-700"
           >
             Iniciar sesión
-          </a>
+          </Link>
         </p>
       </section>
     </main>
