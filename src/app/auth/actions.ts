@@ -34,3 +34,25 @@ export async function signUp(formData: FormData) {
 
   redirect("/login?message=Cuenta creada correctamente");
 }
+
+export async function signIn(formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  if (!email || !password) {
+    redirect("/login?error=Todos los campos son obligatorios");
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    redirect("/login?error=Correo o contraseña incorrectos");
+  }
+
+  redirect("/dashboard");
+}
