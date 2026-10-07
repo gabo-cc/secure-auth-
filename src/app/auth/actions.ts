@@ -64,3 +64,47 @@ export async function signOut() {
 
   redirect("/login");
 }
+
+export async function requestPasswordReset(formData: FormData) {
+  const email = formData.get("email") as string;
+
+  if (!email) {
+    redirect("/recuperar-password?error=El correo es obligatorio");
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/actualizar-password`,
+  });
+
+  if (error) {
+    redirect(`/recuperar-password?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect(
+    "/recuperar-password?message=Revisa tu correo para continuar con la recuperación",
+  );
+}
+
+export async function updatePassword(formData: FormData) {
+  const password = formData.get("password") as string;
+
+  if (!password || password.length < 6) {
+    redirect(
+      "/actualizar-password?error=La contraseña debe tener al menos 6 caracteres",
+    );
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    redirect(`/actualizar-password?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect("/login?message=Contraseña actualizada correctamente");
+}
