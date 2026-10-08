@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth/actions";
 
 export default async function Navbar() {
-  // Este componente depende de la sesión de la petición actual.
   await connection();
 
   const supabase = await createClient();
