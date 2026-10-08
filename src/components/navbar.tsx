@@ -4,13 +4,13 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth/actions";
 
 export default async function Navbar() {
+  // Este componente depende de la sesión de la petición actual.
   await connection();
 
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims;
 
   return (
     <header className="border-b border-gray-200 bg-white">
@@ -24,7 +24,7 @@ export default async function Navbar() {
             <>
               <Link
                 href="/dashboard"
-                className="text-sm font-medium text-gray-700 hover:text-violet-600"
+                className="text-sm font-medium text-gray-700 transition hover:text-violet-600"
               >
                 Dashboard
               </Link>
@@ -32,7 +32,7 @@ export default async function Navbar() {
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700"
+                  className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-700"
                 >
                   Cerrar sesión
                 </button>
@@ -42,14 +42,14 @@ export default async function Navbar() {
             <>
               <Link
                 href="/login"
-                className="text-sm font-medium text-gray-700 hover:text-violet-600"
+                className="text-sm font-medium text-gray-700 transition hover:text-violet-600"
               >
                 Iniciar sesión
               </Link>
 
               <Link
                 href="/registro"
-                className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700"
+                className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-700"
               >
                 Crear cuenta
               </Link>

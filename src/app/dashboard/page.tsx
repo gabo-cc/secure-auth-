@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth/actions";
 
+export const instant = false;
+
 export default async function DashboardPage() {
   const supabase = await createClient();
 
